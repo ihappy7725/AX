@@ -6,7 +6,6 @@ import os
 import base64
 from PIL import Image
 
-# --- 파일 경로를 안전하게 찾아주는 헬퍼 함수 ---
 def get_image_path(filename):
     rel_path = os.path.join("images", filename)
     if os.path.exists(rel_path):
@@ -19,7 +18,6 @@ def get_image_path(filename):
 def main():
     st.set_page_config(page_title="무역 직무 MBTI 진단", layout="centered", page_icon="🚢")
     
-    # ✅ 첫 페이지를 'start'로 설정
     if "page" not in st.session_state:
         st.session_state.page = "start"
     if "scores" not in st.session_state:
@@ -92,7 +90,7 @@ def main():
         {"q": "15. 타 부서나 외부 협력사 사이에서 입장을 조율하고 커뮤니케이션 병목을 잘 풀어냅니까?", "yes": ["물류/오퍼레이션", "글로벌 소싱/구매"], "no": ["무역 사무/지원"]},
         {"q": "16. 나의 개인적인 실적과 달성률이 숫자로 명확하게 증명되는 환경에서 더 큰 동기부여를 받습니까?", "yes": ["해외 영업", "글로벌 소싱/구매"], "no": ["무역 사무/지원", "물류/오퍼레이션"]},
         {"q": "17. 텍스트 나열보다 매력적인 시각 자료(디자인, 영상 등)를 통해 사람의 시선을 끄는 것에 관심이 많습니까?", "yes": ["해외 마케팅"], "no": ["관세/통관", "무역 사무/지원"]},
-        {"q": "18. 화물의 이동 경로나 전체적인 서플라이 체인(Supply Chain)의 구조 파악하는 데 흥미가 있습니까?", "yes": ["물류/오퍼레이션", "글로벌 소싱/구매"], "no": ["해외 마케팅", "무역 사무/지원"]},
+        {"q": "18. 화물의 이동 경로나 전체적인 서플라이 체인(Supply Chain)의 구조를 파악하는 데 흥미가 있습니까?", "yes": ["물류/오퍼레이션", "글로벌 소싱/구매"], "no": ["해외 마케팅", "무역 사무/지원"]},
         {"q": "19. 주장을 관철시키기 위해 관련 법규나 조사 자료 등 객관적인 '팩트'를 수집하는 데 집요한 편입니까?", "yes": ["글로벌 소싱/구매", "관세/통관"], "no": ["해외 영업"]},
         {"q": "20. 다소 스트레스가 있더라도 변화무쌍하고 다이내믹하며 활동적인 업무 환경을 원하십니까?", "yes": ["해외 영업", "물류/오퍼레이션"], "no": ["무역 사무/지원", "관세/통관"]}
     ]
@@ -130,36 +128,56 @@ def main():
         """
         components.html(confetti_js, height=0, width=0)
 
-    # ------------------ 시작(랜딩) 페이지 ------------------
+    # ------------------ 세련된 시작(랜딩) 페이지 ------------------
     if st.session_state.page == "start":
-        st.title("🚢 무역 직무 MBTI 성향 진단")
+        st.markdown("""
+        <div style='text-align: center; padding: 40px 20px;'>
+            <h1 style='color: #1E3A8A; font-size: 2.8em; margin-bottom: 10px;'>🚢 무역 직무 MBTI 성향 진단</h1>
+            <p style='color: #6B7280; font-size: 1.2em;'>내 성향에 딱 맞는 최적의 글로벌 무역 커리어를 찾아보세요!</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # 깔끔한 카드 디자인으로 안내 구성
+        st.markdown("""
+        <div style='display: flex; gap: 15px; margin-bottom: 25px;'>
+            <div style='flex: 1; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; text-align: center;'>
+                <div style='font-size: 1.8em; margin-bottom: 8px;'>🎯</div>
+                <h4 style='margin: 0 0 8px 0; color: #1E293B;'>실무 밀착형 20문항</h4>
+                <p style='font-size: 0.9em; color: #64748B; margin: 0;'>해외영업부터 관세통관까지 현업 기준 분석</p>
+            </div>
+            <div style='flex: 1; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; text-align: center;'>
+                <div style='font-size: 1.8em; margin-bottom: 8px;'>📊</div>
+                <h4 style='margin: 0 0 8px 0; color: #1E293B;'>정교한 5점 척도</h4>
+                <p style='font-size: 0.9em; color: #64748B; margin: 0;'>내 성향의 강도를 섬세하게 반영한 매칭</p>
+            </div>
+            <div style='flex: 1; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; text-align: center;'>
+                <div style='font-size: 1.8em; margin-bottom: 8px;'>🏆</div>
+                <h4 style='margin: 0 0 8px 0; color: #1E293B;'>커스텀 페르소나</h4>
+                <p style='font-size: 0.9em; color: #64748B; margin: 0;'>나만의 무역 직무 캐릭터와 상세 리포트 제공</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        with st.expander("📌 진단 전 필독 주의사항 (클릭하여 확인)"):
+            st.markdown("""
+            - 정답이 있는 테스트가 아닙니다. 너무 오래 고민하지 마시고 **3초 이내에 떠오르는 직관적인 느낌**으로 선택해 주세요.
+            - 1점(전혀 그렇지 않다)부터 5점(매우 그렇다) 사이의 슬라이더를 활용해 성향을 체크합니다.
+            - 솔직하게 답변할수록 내게 가장 잘 맞는 무역 직무를 정확하게 찾을 수 있습니다.
+            """)
+
         st.markdown("<br>", unsafe_allow_html=True)
         
-        st.info("""
-        **💡 무역 직무 MBTI 진단 테스트 안내**  
-
-        **1. 어떤 테스트인가요?**
-        이 테스트는 20개의 실무 상황 기반 질문을 통해 당신의 성향과 강점을 분석하고, 6가지 주요 무역 직무 중 가장 찰떡인 직무를 추천해 드리는 진단 프로그램입니다.
-
-        **2. 테스트 참여 방법**
-        각 질문을 읽고, 자신의 평소 성향과 가장 가깝다고 느끼는 정도를 **1점부터 5점 사이의 슬라이더**를 움직여 선택해 주세요. 
-        * **5점**: 매우 그렇다  |  **4점**: 그렇다  |  **3점**: 보통이다  |  **2점**: 약간 그렇지 않다  |  **1점**: 전혀 그렇지 않다
-
-        **3. ⚠️ 주의사항 (중요!)**
-        정답이 있는 시험이 아닙니다! 너무 오래 고민하지 말고 문항을 읽고 **3초 이내에 가장 먼저 떠오르는 직관적인 느낌**대로 선택해 주세요. 솔직한 답변이 가장 정확한 직무 매칭을 도와줍니다.🚀
-        """)
-        
-        st.markdown("<br><br>", unsafe_allow_html=True)
-        
-        # 시작 버튼을 누르면 상태를 'survey'로 변경하고 재실행
-        if st.button("👉 무역 MBTI 테스트 시작하기", use_container_width=True):
-            st.session_state.page = "survey"
-            st.rerun()
+        # 버튼을 강조하는 마크다운 래퍼
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            if st.button("🚀 테스트 시작하기", use_container_width=True, type="primary"):
+                st.session_state.page = "survey"
+                st.rerun()
 
     # ------------------ 설문조사 페이지 ------------------
     elif st.session_state.page == "survey":
         st.header("📝 성향 진단 테스트")
-        st.markdown("자신의 성향에 가장 가까운 점수를 선택해 주세요.")
+        st.markdown("각 문항을 읽고 본인의 성향과 일치하는 정도를 선택해 주세요.")
         st.markdown("---")
         
         with st.form(key="mbti_form"):
@@ -202,6 +220,7 @@ def main():
         top_2 = sorted_jobs[1][0]
         top_3 = sorted_jobs[2][0]
 
+        # 1. 상단에 사용자 결과 먼저 배치
         img_path = get_image_path(jobs_info[top_1]['image_file'])
         img_base64 = get_image_base64(img_path)
         
@@ -254,6 +273,7 @@ def main():
         
         st.markdown("---")
         
+        # 2. 하단에 다른 무역 직무 살펴보기 배치
         st.subheader("🔍 다른 무역 직무 MBTI 살펴보기")
         other_jobs = [job for job in jobs_info.keys() if job != top_1]
         cols = st.columns(len(other_jobs))
@@ -273,7 +293,6 @@ def main():
                     st.rerun()
         
         st.markdown("<br>", unsafe_allow_html=True)
-        # ✅ 테스트 화면이 아닌 첫 화면(start)으로 돌아가도록 수정
         if st.button("🔄 처음으로 돌아가기"):
             st.session_state.page = "start"
             st.session_state.scores = None
