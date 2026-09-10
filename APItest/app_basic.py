@@ -111,12 +111,13 @@ else:
                 bgcolor="#0e1117"
             )
             
+            # 오류 원인이었던 symbol='marker'를 지원되는 'circle' 등으로 변경
             fig.update_traces(
                 marker=dict(
-                    size=16, 
+                    size=14, 
                     color="#e63946", 
-                    symbol="marker", 
-                    line=dict(width=1, color="white")
+                    symbol="circle", 
+                    line=dict(width=2, color="white")
                 )
             )
             fig.update_layout(
