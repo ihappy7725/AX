@@ -6,6 +6,8 @@
 # .env 파일을 생성하고 이곳에 OPENWHEATHER_API_KEY=발급받은_API_KEY
 # .env.example OPENWHEATHER_API_KEY=your_key
 # .env.example 받아서 .env로 이름 바꾸고 본인의 API를 채운다. 
+
+
 import os 
 import requests
 import streamlit as st
