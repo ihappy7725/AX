@@ -1,9 +1,9 @@
-pandas
 streamlit
-numpy
-matplotlib
-plotly
-dotenv
 requests
+python-dotenv
+pandas
+numpy
 yfinance
-Folium
+plotly
+folium
+streamlit-folium
