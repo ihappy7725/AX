@@ -6,11 +6,11 @@
 # .env 파일을 생성하고 이곳에 OPENWHEATHER_API_KEY=발급받은_API_KEY
 # .env.example OPENWHEATHER_API_KEY=your_key
 # .env.example 받아서 .env로 이름 바꾸고 본인의 API를 채운다. 
-
 import os 
 import requests
 import streamlit as st
-import plotly.express as px
+import folium
+from streamlit_folium import st_folium
 import yfinance as yf
 import pandas as pd
 from dotenv import load_dotenv
@@ -78,7 +78,7 @@ st.header(f"🌤️ 현재 날씨 및 위치 ({selected_city_label})")
 if not WEATHER_API_KEY:
     st.error("날씨 API 키를 찾을 수 없습니다.")
 else:
-    with st.spinner("날씨 및 3D 지도 정보를 가져오는 중..."):
+    with st.spinner("날씨 및 지도 정보를 가져오는 중..."):
         weather_data = get_weather(city)
         if weather_data:
             col1, col2, col3, col4 = st.columns(4)
@@ -93,40 +93,22 @@ else:
             
             lat = weather_data['coord']['lat']
             lon = weather_data['coord']['lon']
+            city_name = weather_data['name']
             
-            df_loc = pd.DataFrame({'lat': [lat], 'lon': [lon], 'city': [weather_data['name']]})
+            # Folium을 이용해 네이버/구글 지도와 같은 평면 지도 생성
+            m = folium.Map(location=[lat, lon], zoom_start=11)
             
-            fig = px.scatter_geo(
-                df_loc, lat='lat', lon='lon', hover_name='city', 
-                projection="orthographic"
-            )
+            # 해당 지역에 핀(마커) 및 팝업 추가
+            folium.Marker(
+                [lat, lon],
+                popup=city_name,
+                tooltip=f"📍 {selected_city_label}",
+                icon=folium.Icon(color="red", icon="info-sign")
+            ).add_to(m)
             
-            fig.update_geos(
-                center=dict(lat=lat, lon=lon),
-                projection_scale=2.0,
-                showcountries=True, countrycolor="#444444",
-                showland=True, landcolor="#2b2d42",
-                showocean=True, oceancolor="#1d3557",
-                showlakes=True, lakecolor="#1d3557",
-                bgcolor="#0e1117"
-            )
+            # Streamlit 화면에 지도 렌더링 (반응형 폭 적용)
+            st_folium(m, width=None, height=450)
             
-            # 오류 원인이었던 symbol='marker'를 지원되는 'circle' 등으로 변경
-            fig.update_traces(
-                marker=dict(
-                    size=14, 
-                    color="#e63946", 
-                    symbol="circle", 
-                    line=dict(width=2, color="white")
-                )
-            )
-            fig.update_layout(
-                margin={"r":0,"t":0,"l":0,"b":0}, 
-                height=500,
-                paper_bgcolor="#0e1117"
-            )
-            
-            st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("날씨 정보를 가져오는 데 실패했습니다. 도시 이름을 확인해주세요.")
 
