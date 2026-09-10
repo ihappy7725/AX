@@ -4,26 +4,24 @@ import plotly.express as px
 import streamlit.components.v1 as components
 import os
 import base64
-from PIL import Image  # 이미지를 더 확실하게 불러오기 위한 라이브러리
+from PIL import Image
 
 # --- 파일 경로를 안전하게 찾아주는 헬퍼 함수 ---
 def get_image_path(filename):
-    # 1. 상대 경로 시도 (스트림릿 클라우드에서 주로 작동)
     rel_path = os.path.join("images", filename)
     if os.path.exists(rel_path):
         return rel_path
-    # 2. 절대 경로 시도 (로컬 환경에서 주로 작동)
     abs_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "images", filename)
     if os.path.exists(abs_path):
         return abs_path
-    # 둘 다 없으면 None 반환
     return None
 
 def main():
     st.set_page_config(page_title="무역 직무 MBTI 진단", layout="centered", page_icon="🚢")
     
+    # ✅ 첫 페이지를 'start'로 설정
     if "page" not in st.session_state:
-        st.session_state.page = "survey"
+        st.session_state.page = "start"
     if "scores" not in st.session_state:
         st.session_state.scores = None
     if "effects_shown" not in st.session_state:
@@ -31,7 +29,6 @@ def main():
     if "selected_job" not in st.session_state:
         st.session_state.selected_job = None
 
-    # jobs_info 에는 파일명만 저장하고, 실제 출력할 때 경로를 찾습니다.
     jobs_info = {
         "해외 영업": {
             "mbti_name": "글로벌 개척가형 (Global Pioneer)",
@@ -95,7 +92,7 @@ def main():
         {"q": "15. 타 부서나 외부 협력사 사이에서 입장을 조율하고 커뮤니케이션 병목을 잘 풀어냅니까?", "yes": ["물류/오퍼레이션", "글로벌 소싱/구매"], "no": ["무역 사무/지원"]},
         {"q": "16. 나의 개인적인 실적과 달성률이 숫자로 명확하게 증명되는 환경에서 더 큰 동기부여를 받습니까?", "yes": ["해외 영업", "글로벌 소싱/구매"], "no": ["무역 사무/지원", "물류/오퍼레이션"]},
         {"q": "17. 텍스트 나열보다 매력적인 시각 자료(디자인, 영상 등)를 통해 사람의 시선을 끄는 것에 관심이 많습니까?", "yes": ["해외 마케팅"], "no": ["관세/통관", "무역 사무/지원"]},
-        {"q": "18. 화물의 이동 경로나 전체적인 서플라이 체인(Supply Chain)의 구조를 파악하는 데 흥미가 있습니까?", "yes": ["물류/오퍼레이션", "글로벌 소싱/구매"], "no": ["해외 마케팅", "무역 사무/지원"]},
+        {"q": "18. 화물의 이동 경로나 전체적인 서플라이 체인(Supply Chain)의 구조 파악하는 데 흥미가 있습니까?", "yes": ["물류/오퍼레이션", "글로벌 소싱/구매"], "no": ["해외 마케팅", "무역 사무/지원"]},
         {"q": "19. 주장을 관철시키기 위해 관련 법규나 조사 자료 등 객관적인 '팩트'를 수집하는 데 집요한 편입니까?", "yes": ["글로벌 소싱/구매", "관세/통관"], "no": ["해외 영업"]},
         {"q": "20. 다소 스트레스가 있더라도 변화무쌍하고 다이내믹하며 활동적인 업무 환경을 원하십니까?", "yes": ["해외 영업", "물류/오퍼레이션"], "no": ["무역 사무/지원", "관세/통관"]}
     ]
@@ -133,9 +130,10 @@ def main():
         """
         components.html(confetti_js, height=0, width=0)
 
-    # ------------------ 설문조사 페이지 ------------------
-    if st.session_state.page == "survey":
+    # ------------------ 시작(랜딩) 페이지 ------------------
+    if st.session_state.page == "start":
         st.title("🚢 무역 직무 MBTI 성향 진단")
+        st.markdown("<br>", unsafe_allow_html=True)
         
         st.info("""
         **💡 무역 직무 MBTI 진단 테스트 안내**  
@@ -151,6 +149,17 @@ def main():
         정답이 있는 시험이 아닙니다! 너무 오래 고민하지 말고 문항을 읽고 **3초 이내에 가장 먼저 떠오르는 직관적인 느낌**대로 선택해 주세요. 솔직한 답변이 가장 정확한 직무 매칭을 도와줍니다.🚀
         """)
         
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        
+        # 시작 버튼을 누르면 상태를 'survey'로 변경하고 재실행
+        if st.button("👉 무역 MBTI 테스트 시작하기", use_container_width=True):
+            st.session_state.page = "survey"
+            st.rerun()
+
+    # ------------------ 설문조사 페이지 ------------------
+    elif st.session_state.page == "survey":
+        st.header("📝 성향 진단 테스트")
+        st.markdown("자신의 성향에 가장 가까운 점수를 선택해 주세요.")
         st.markdown("---")
         
         with st.form(key="mbti_form"):
@@ -253,7 +262,6 @@ def main():
             with cols[idx]:
                 img_path2 = get_image_path(jobs_info[job]['image_file'])
                 if img_path2:
-                    # PIL Image 객체로 렌더링하면 파일 경로 인식 오류가 거의 없습니다.
                     st.image(Image.open(img_path2), use_container_width=True)
                 else:
                     st.warning("이미지 누락")
@@ -265,8 +273,9 @@ def main():
                     st.rerun()
         
         st.markdown("<br>", unsafe_allow_html=True)
+        # ✅ 테스트 화면이 아닌 첫 화면(start)으로 돌아가도록 수정
         if st.button("🔄 처음으로 돌아가기"):
-            st.session_state.page = "survey"
+            st.session_state.page = "start"
             st.session_state.scores = None
             st.session_state.effects_shown = False
             st.rerun()
@@ -308,7 +317,7 @@ def main():
                 st.rerun()
         with col2:
             if st.button("🔄 처음부터 다시 테스트하기", use_container_width=True):
-                st.session_state.page = "survey"
+                st.session_state.page = "start"
                 st.session_state.scores = None
                 st.session_state.effects_shown = False
                 st.session_state.selected_job = None
