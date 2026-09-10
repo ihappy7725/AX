@@ -36,7 +36,6 @@ def get_exchange_rate(base_currency):
     return None
 
 def get_fluctuation(ticker):
-    """yfinance를 활용하여 전일 대비 환율 등락을 계산합니다."""
     try:
         data = yf.Ticker(ticker)
         hist = data.history(period="2d")
@@ -50,56 +49,85 @@ def get_fluctuation(ticker):
     return None, None
 
 st.set_page_config(page_title="종합 정보 앱", layout="wide")
+
+# --- 사이드바: 도시 선택 영역 ---
+st.sidebar.header("🌍 지역 선택 설정")
+city_options = {
+    "서울 (대한민국)": "Seoul",
+    "도쿄 (일본)": "Tokyo",
+    "베이징 (중국)": "Beijing",
+    "샤먼 (중국)": "Xiamen",
+    "뉴욕 (미국)": "New York",
+    "런던 (영국)": "London",
+    "파리 (프랑스)": "Paris",
+    "싱가포르 (싱가포르)": "Singapore"
+}
+
+selected_city_label = st.sidebar.selectbox("주요 도시 선택", list(city_options.keys()))
+city = city_options[selected_city_label]
+
+custom_city = st.sidebar.text_input("또는 직접 도시 영문명 입력", "")
+if custom_city:
+    city = custom_city
+
 st.title("🌍 실시간 날씨 및 환율 조회 서비스")
 
 # --- 1. 날씨 섹션 ---
-st.header("🌤️ 현재 날씨 및 위치")
-city = st.text_input("도시 이름 (예: Seoul, Tokyo, London, Xiamen)", "Seoul")
+st.header(f"🌤️ 현재 날씨 및 위치 ({selected_city_label})")
 
-if st.button("날씨 확인"):
-    if not WEATHER_API_KEY:
-        st.error("날씨 API 키를 찾을 수 없습니다.")
-    else:
-        with st.spinner("날씨 및 지도 정보를 가져오는 중..."):
-            weather_data = get_weather(city)
-            if weather_data:
-                # 1) 날씨 메트릭 출력
-                col1, col2, col3, col4 = st.columns(4)
-                with col1:
-                    st.metric(label="현재 온도", value=f"{weather_data['main']['temp']}°C")
-                with col2:
-                    st.metric(label="체감 온도", value=f"{weather_data['main']['feels_like']}°C")
-                with col3:
-                    st.metric(label="습도", value=f"{weather_data['main']['humidity']}%")
-                with col4:
-                    st.metric(label="날씨", value=weather_data['weather'][0]['description'])
-                
-                # 2) 3D 지구본 지도 출력
-                lat = weather_data['coord']['lat']
-                lon = weather_data['coord']['lon']
-                
-                df_loc = pd.DataFrame({'lat': [lat], 'lon': [lon], 'city': [weather_data['name']]})
-                
-                # orthographic 투영법을 사용하여 3D 지구본 형태로 렌더링
-                fig = px.scatter_geo(
-                    df_loc, lat='lat', lon='lon', hover_name='city', 
-                    projection="orthographic"
+if not WEATHER_API_KEY:
+    st.error("날씨 API 키를 찾을 수 없습니다.")
+else:
+    with st.spinner("날씨 및 3D 지도 정보를 가져오는 중..."):
+        weather_data = get_weather(city)
+        if weather_data:
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric(label="현재 온도", value=f"{weather_data['main']['temp']}°C")
+            with col2:
+                st.metric(label="체감 온도", value=f"{weather_data['main']['feels_like']}°C")
+            with col3:
+                st.metric(label="습도", value=f"{weather_data['main']['humidity']}%")
+            with col4:
+                st.metric(label="날씨", value=weather_data['weather'][0]['description'])
+            
+            lat = weather_data['coord']['lat']
+            lon = weather_data['coord']['lon']
+            
+            df_loc = pd.DataFrame({'lat': [lat], 'lon': [lon], 'city': [weather_data['name']]})
+            
+            fig = px.scatter_geo(
+                df_loc, lat='lat', lon='lon', hover_name='city', 
+                projection="orthographic"
+            )
+            
+            fig.update_geos(
+                center=dict(lat=lat, lon=lon),
+                projection_scale=2.0,
+                showcountries=True, countrycolor="#444444",
+                showland=True, landcolor="#2b2d42",
+                showocean=True, oceancolor="#1d3557",
+                showlakes=True, lakecolor="#1d3557",
+                bgcolor="#0e1117"
+            )
+            
+            fig.update_traces(
+                marker=dict(
+                    size=16, 
+                    color="#e63946", 
+                    symbol="marker", 
+                    line=dict(width=1, color="white")
                 )
-                
-                # 지도 디자인 설정
-                fig.update_geos(
-                    showcountries=True, countrycolor="black",
-                    showland=True, landcolor="#E5E5E5",
-                    showocean=True, oceancolor="#C6E2FF",
-                    showlakes=True, lakecolor="#C6E2FF",
-                    resolution=50
-                )
-                fig.update_traces(marker=dict(size=12, color="red", symbol="circle"))
-                fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0}, height=500)
-                
-                st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.error("날씨 정보를 가져오는 데 실패했습니다.")
+            )
+            fig.update_layout(
+                margin={"r":0,"t":0,"l":0,"b":0}, 
+                height=500,
+                paper_bgcolor="#0e1117"
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.error("날씨 정보를 가져오는 데 실패했습니다. 도시 이름을 확인해주세요.")
 
 st.divider()
 
@@ -122,16 +150,18 @@ if st.button("환율 확인"):
                 st.success(f"현재 1 **{base_currency}** = **{rate:,.2f} {target_currency}** 입니다.")
                 
                 st.markdown("### 주요 통화 대비 원화(KRW) 등락")
-                # 주요 통화의 yfinance 티커 심볼 (예: 달러-원 환율은 KRW=X)
-                tickers = {"미국 달러 (USD)": "KRW=X", "유로 (EUR)": "EURKRW=X", "일본 엔 (JPY)": "JPYKRW=X", "중국 위안 (CNY)": "CNYKRW=X"}
+                tickers = {
+                    "미국 달러 (USD)": "KRW=X", 
+                    "유로 (EUR)": "EURKRW=X", 
+                    "일본 엔 (JPY)": "JPYKRW=X", 
+                    "중국 위안 (CNY)": "CNYKRW=X"
+                }
                 
                 metric_cols = st.columns(4)
                 for i, (label, ticker) in enumerate(tickers.items()):
                     current_val, diff_val = get_fluctuation(ticker)
-                    
                     with metric_cols[i]:
                         if current_val is not None and diff_val is not None:
-                            # st.metric의 delta 속성을 사용하면 화살표와 함께 등락이 자동으로 색상 표시됩니다.
                             st.metric(
                                 label=label, 
                                 value=f"{current_val:,.2f} 원", 
@@ -141,3 +171,29 @@ if st.button("환율 확인"):
                             st.metric(label=label, value="데이터 없음")
             else:
                 st.error("환율 정보를 가져오는 데 실패했습니다.")
+
+st.divider()
+
+# --- 3. 실시간 환율 계산기 섹션 ---
+st.header("🧮 실시간 환율 계산기")
+st.write("원하는 금액을 입력하여 다른 통화로 변환해 보세요.")
+
+col_calc1, col_calc2 = st.columns(2)
+with col_calc1:
+    calc_base = st.selectbox("변환할 기준 통화", ["USD", "KRW", "EUR", "JPY", "CNY"], index=0, key="calc_base")
+with col_calc2:
+    calc_target = st.selectbox("변환될 대상 통화", ["KRW", "USD", "EUR", "JPY", "CNY"], index=0, key="calc_target")
+
+amount = st.number_input("변환할 금액 입력", min_value=0.0, value=100.0, step=10.0)
+
+if st.button("계산하기"):
+    if not EXCHANGE_API_KEY:
+        st.error("환율 API 키를 찾을 수 없습니다.")
+    else:
+        calc_data = get_exchange_rate(calc_base)
+        if calc_data and calc_target in calc_data['conversion_rates']:
+            conversion_rate = calc_data['conversion_rates'][calc_target]
+            converted_amount = amount * conversion_rate
+            st.info(f"💡 **{amount:,.2f} {calc_base}** = **{converted_amount:,.2f} {calc_target}** (적용 환율: 1 {calc_base} = {conversion_rate:,.4f} {calc_target})")
+        else:
+            st.error("환율 계산 중 오류가 발생했습니다.")
