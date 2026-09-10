@@ -6,4 +6,4 @@ plotly
 dotenv
 requests
 yfinance
-folium
+Folium
