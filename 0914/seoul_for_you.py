@@ -196,12 +196,12 @@ st.markdown(
     """
     <style>
         :root {
-            --sfy-sage: #F0F3D7;
-            --sfy-sage-deep: #E3E8BD;
+            --sfy-sage: #F8F9EC;
+            --sfy-sage-deep: #EEF1D8;
             --sfy-coral: #EFC1AE;
             --sfy-coral-strong: #E9A996;
-            --sfy-cream: #F6EDD8;
-            --sfy-cream-light: #FFF9EA;
+            --sfy-cream: #FBF6E9;
+            --sfy-cream-light: #FFFDF6;
             --sfy-green: #596E58;
             --sfy-green-soft: #879780;
             --sfy-ink: #39483B;
@@ -216,7 +216,7 @@ st.markdown(
         }
 
         [data-testid="stHeader"] {
-            background: rgba(214, 222, 158, 0.94) !important;
+            background: rgba(248, 249, 236, 0.96) !important;
             backdrop-filter: blur(8px);
         }
 
@@ -366,6 +366,44 @@ st.markdown(
             text-transform: uppercase;
         }
 
+
+        /* ---------- Compact Seoul AI sidebar ---------- */
+        .ai-guide-card {
+            background: rgba(255, 253, 246, 0.78);
+            border: 1px solid rgba(89, 110, 88, 0.18);
+            border-radius: 16px;
+            padding: 0.9rem 0.95rem 0.8rem 0.95rem;
+            margin-bottom: 0.7rem;
+        }
+
+        .ai-guide-kicker {
+            color: var(--sfy-coral-strong);
+            font-size: 0.66rem;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            margin-bottom: 0.22rem;
+        }
+
+        .ai-guide-title {
+            color: var(--sfy-green);
+            font-size: 1.02rem;
+            line-height: 1.3;
+            font-weight: 850;
+            margin-bottom: 0.28rem;
+        }
+
+        .ai-guide-subtitle {
+            color: var(--sfy-green-soft);
+            font-size: 0.78rem;
+            line-height: 1.45;
+        }
+
+        [data-testid="stSidebar"] div[data-testid="stForm"] {
+            border: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+        }
+
         /* ---------- Sidebar ---------- */
         [data-testid="stSidebar"] {
             background: var(--sfy-sage-deep) !important;
@@ -474,58 +512,6 @@ st.markdown(
             font-weight: 850;
         }
 
-        /* ---------- Story / journey banner ---------- */
-        .journey-banner {
-            position: relative;
-            overflow: hidden;
-            border: 1.4px solid var(--sfy-line);
-            border-radius: 20px;
-            padding: 1.25rem 1.35rem;
-            margin: 0.35rem 0 1.25rem 0;
-            background: var(--sfy-cream);
-        }
-
-        .journey-banner::after {
-            content: "서울";
-            position: absolute;
-            right: 1.2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(239,193,174,0.46);
-            font-size: 4.6rem;
-            font-weight: 900;
-            line-height: 1;
-            pointer-events: none;
-        }
-
-        .journey-kicker {
-            position: relative;
-            z-index: 2;
-            font-size: 0.7rem;
-            letter-spacing: 0.16em;
-            font-weight: 900;
-            color: var(--sfy-coral-strong);
-            margin-bottom: 0.4rem;
-        }
-
-        .journey-title {
-            position: relative;
-            z-index: 2;
-            font-size: 1.5rem;
-            font-weight: 850;
-            color: var(--sfy-green);
-            margin-bottom: 0.35rem;
-            max-width: 78%;
-        }
-
-        .journey-desc {
-            position: relative;
-            z-index: 2;
-            font-size: 0.94rem;
-            color: var(--sfy-ink);
-            line-height: 1.6;
-            max-width: 78%;
-        }
 
         /* ---------- Cards ---------- */
         .place-card {
@@ -745,15 +731,6 @@ st.markdown(
             .poster-caption-main {
                 font-size: 0.84rem;
             }
-
-            .journey-title,
-            .journey-desc {
-                max-width: 100%;
-            }
-
-            .journey-banner::after {
-                opacity: 0.18;
-            }
         }
     </style>
     """,
@@ -775,12 +752,12 @@ UI = {
     "en": {
         "tagline": "Eight journeys, one city. Find the Seoul story you want to walk into.",
         "language": "Language",
-        "ai_title": "Ask me anything about Seoul travel",
-        "ai_subtitle": "Routes, food, neighborhoods, etiquette, transport and more.",
+        "ai_title": "Ask Seoul AI",
+        "ai_subtitle": "Ask about routes, food, transport, neighborhoods, and local tips.",
         "ai_placeholder": "e.g. Where should I go on a rainy afternoon?",
         "ai_send": "Ask Seoul AI",
         "ai_clear": "Clear chat",
-        "ai_api_missing": "OpenAI API key is not configured.",
+        "ai_api_missing": "Connect an API key to use Seoul AI.",
         "ai_api_key": "OpenAI API key",
         "ai_error": "I couldn't answer that just now. Please try again.",
         "ai_install": "Install the `openai` package to use the travel chat.",
@@ -884,12 +861,12 @@ Police: **112** · Fire/ambulance: **119** · Korea Travel Helpline: **1330**.
     "zh-CN": {
         "tagline": "八段旅程，一座城市。走进属于你的首尔故事。",
         "language": "语言",
-        "ai_title": "关于首尔旅行，什么都可以问我",
-        "ai_subtitle": "路线、美食、街区、礼仪、交通等都可以问。",
+        "ai_title": "问问 Seoul AI",
+        "ai_subtitle": "路线、美食、交通、街区和本地旅行建议都可以问。",
         "ai_placeholder": "例如：下雨的下午去哪里比较好？",
         "ai_send": "询问首尔 AI",
         "ai_clear": "清空对话",
-        "ai_api_missing": "尚未设置 OpenAI API 密钥。",
+        "ai_api_missing": "连接 API 密钥后即可使用 Seoul AI。",
         "ai_api_key": "OpenAI API 密钥",
         "ai_error": "暂时无法回答，请稍后再试。",
         "ai_install": "请安装 `openai` 套件以使用旅行问答。",
@@ -993,8 +970,8 @@ Police: **112** · Fire/ambulance: **119** · Korea Travel Helpline: **1330**.
     "ja": {
         "tagline": "場所を探すだけでなく、あなたのソウルを見つけよう。",
         "language": "言語",
-        "ai_title": "ソウル旅行について何でも聞いてください",
-        "ai_subtitle": "ルート、グルメ、街歩き、マナー、交通など何でもどうぞ。",
+        "ai_title": "Seoul AI に聞く",
+        "ai_subtitle": "ルート、グルメ、交通、街歩き、現地のコツを質問できます。",
         "ai_placeholder": "例：雨の午後はどこがおすすめ？",
         "ai_send": "ソウル AI に聞く",
         "ai_clear": "チャットを消去",
@@ -1312,8 +1289,8 @@ hero_component_html = f"""<!DOCTYPE html>
 {hero_font_face}
 
 :root {{
-    --sage: #F0F3D7;
-    --sage-deep: #E3E8BD;
+    --sage: #F8F9EC;
+    --sage-deep: #EEF1D8;
     --coral: #EFC1AE;
     --coral-strong: #E9A996;
     --cream: #EEE4C7;
@@ -1349,8 +1326,8 @@ body {{
         ),
         linear-gradient(
             145deg,
-            #F1F4D9 0%,
-            #E7ECC5 100%
+            #F8F9EB 0%,
+            #EFF2D8 100%
         );
 }}
 
@@ -2323,6 +2300,100 @@ def get_openai_api_key():
     return secret_key or os.getenv("OPENAI_API_KEY", "")
 
 
+def get_openai_model():
+    """Read model from Streamlit secrets/environment, with a safe default."""
+    try:
+        secret_model = st.secrets.get("OPENAI_MODEL", "")
+    except Exception:
+        secret_model = ""
+
+    return secret_model or os.getenv("OPENAI_MODEL", "gpt-5.6-luna")
+
+
+def explain_openai_error(error):
+    """
+    Convert OpenAI/SDK exceptions into a useful message without exposing
+    the API key or other secrets.
+    """
+    error_text = str(error).strip()
+    error_lower = error_text.lower()
+
+    status_code = getattr(error, "status_code", None)
+    body = getattr(error, "body", None)
+
+    error_code = None
+    if isinstance(body, dict):
+        body_error = body.get("error", body)
+        if isinstance(body_error, dict):
+            error_code = body_error.get("code") or body_error.get("type")
+
+    # Old SDK / Responses API unavailable
+    if (
+        isinstance(error, AttributeError)
+        or "has no attribute 'responses'" in error_lower
+        or "object has no attribute 'responses'" in error_lower
+    ):
+        return (
+            "OpenAI Python package is too old for the Responses API. "
+            "In the VS Code terminal, run: `pip install -U openai`, "
+            "then completely restart Streamlit."
+        )
+
+    # Authentication / invalid key
+    if status_code == 401 or "invalid_api_key" in error_lower or "incorrect api key" in error_lower:
+        return (
+            "The API key was rejected (401). Check that the full key was pasted "
+            "without spaces, and that it belongs to an active OpenAI API project."
+        )
+
+    # Billing / quota
+    billing_codes = {
+        "insufficient_quota",
+        "credit_balance_exhausted",
+        "organization_usage_limit_exceeded",
+        "organization_spend_limit_exceeded",
+        "project_spend_limit_exceeded",
+    }
+    if (
+        status_code == 429
+        or error_code in billing_codes
+        or "insufficient_quota" in error_lower
+        or "credit balance" in error_lower
+        or "spend limit" in error_lower
+    ):
+        return (
+            "The API request reached a billing/quota limit. Creating a new API key "
+            "does not add API credits. Check API Platform billing, prepaid credits, "
+            "and the project/organization spend limit."
+        )
+
+    # Model unavailable / permissions
+    if (
+        status_code == 404
+        or "model_not_found" in error_lower
+        or ("model" in error_lower and "access" in error_lower)
+    ):
+        return (
+            f"The selected model (`{get_openai_model()}`) is not available to this API project. "
+            "Try a model that your project can access, or check the project permissions."
+        )
+
+    # Network
+    if (
+        "connection" in error_lower
+        or "timeout" in error_lower
+        or "timed out" in error_lower
+    ):
+        return (
+            "The app could not reach the OpenAI API. Check the internet connection, "
+            "VPN/firewall, and then try again."
+        )
+
+    # Generic but still useful
+    short_error = error_text[:500] if error_text else error.__class__.__name__
+    return f"OpenAI API error: `{short_error}`"
+
+
 def build_seoul_ai_context(question, max_places=12):
     """
     Select a compact set of relevant places from the local curated CSV.
@@ -2435,7 +2506,7 @@ TRAVELER QUESTION:
 
     client = OpenAI(api_key=api_key)
     response = client.responses.create(
-        model=os.getenv("OPENAI_MODEL", "gpt-5.6-luna"),
+        model=get_openai_model(),
         instructions=instructions,
         input=prompt,
     )
@@ -2468,26 +2539,41 @@ else:
 # ============================================================
 
 with st.sidebar:
-    st.markdown(f"### 💬 {txt['ai_title']}")
-    st.caption(txt["ai_subtitle"])
+    st.markdown(
+        f"""
+        <div class="ai-guide-card">
+            <div class="ai-guide-kicker">SEOUL AI GUIDE</div>
+            <div class="ai-guide-title">💬 {txt["ai_title"]}</div>
+            <div class="ai-guide-subtitle">{txt["ai_subtitle"]}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     api_key = get_openai_api_key()
 
+    # Only show API setup UI when no key is already configured.
     if not api_key:
-        api_key = st.text_input(
-            txt["ai_api_key"],
-            type="password",
-            key="openai_key_input",
-            help="Used only for this Streamlit session unless OPENAI_API_KEY is set in Streamlit secrets or your environment.",
-        )
+        with st.expander("⚙️ AI setup", expanded=False):
+            api_key = st.text_input(
+                txt["ai_api_key"],
+                type="password",
+                key="openai_key_input",
+                placeholder="sk-...",
+                help=(
+                    "Used only for this Streamlit session unless "
+                    "OPENAI_API_KEY is stored in Streamlit secrets or your environment."
+                ),
+            )
+            if not api_key:
+                st.caption(txt["ai_api_missing"])
 
     if OpenAI is None:
         st.warning(txt["ai_install"])
-    elif not api_key:
-        st.caption(txt["ai_api_missing"])
 
+    # Keep previous answers visible, but avoid a large empty chat panel.
     if st.session_state.seoul_chat:
-        chat_box = st.container(height=240, border=True)
+        chat_box = st.container(height=220, border=True)
         with chat_box:
             for message in st.session_state.seoul_chat[-6:]:
                 with st.chat_message(message["role"]):
@@ -2524,9 +2610,16 @@ with st.sidebar:
                 st.session_state.seoul_chat.append(
                     {"role": "assistant", "content": answer}
                 )
-            except Exception:
+            except Exception as e:
+                diagnostic_message = explain_openai_error(e)
                 st.session_state.seoul_chat.append(
-                    {"role": "assistant", "content": txt["ai_error"]}
+                    {
+                        "role": "assistant",
+                        "content": (
+                            f"{txt['ai_error']}\n\n"
+                            f"**Diagnostic:** {diagnostic_message}"
+                        ),
+                    }
                 )
 
         st.rerun()
@@ -2691,22 +2784,6 @@ else:
 
 
 
-# ============================================================
-# 16-1. SELECTED SEOUL STORY
-# ============================================================
-
-story_title, story_desc = JOURNEY_COPY[lang_code][selected_theme]
-
-st.markdown(
-    f"""
-    <div class="journey-banner">
-        <div class="journey-kicker">SEOUL STORY · 서울 테마기행</div>
-        <div class="journey-title">{story_title}</div>
-        <div class="journey-desc">{story_desc}</div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
 
 
 # ============================================================
