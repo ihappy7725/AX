@@ -7,3 +7,7 @@ yfinance
 plotly
 folium
 streamlit-folium
+openai
+folium
+deep-translator
+

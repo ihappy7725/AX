@@ -1,0 +1,13 @@
+맵 전역 스타일 및 서버 환경 설정 
+
+[theme]
+primaryColor = "#2E86C1"
+backgroundColor = "#F5F5F5"
+secondaryBackgroundColor = "#F4F6F7"
+textColor = "#2C3E50"
+font = "sans serif"
+
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = true

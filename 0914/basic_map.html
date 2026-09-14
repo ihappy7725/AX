@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_bebd68df275425ef0f10e883cd756be0 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_bebd68df275425ef0f10e883cd756be0" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_bebd68df275425ef0f10e883cd756be0 = L.map(
+                "map_bebd68df275425ef0f10e883cd756be0",
+                {
+                    center: [37.5665, 126.978],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_75ef437969801b393a0cddf136bf0461 = L.tileLayer(
+                "https://xdworld.vworld.kr/2d/Base/service/{z}/{x}/{y}.png",
+                {
+  "minZoom": 6,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \uad6d\ud1a0\uad50\ud1b5\ubd80 VWorld",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_75ef437969801b393a0cddf136bf0461.addTo(map_bebd68df275425ef0f10e883cd756be0);
+        
+    
+            var marker_843c3ff2ddd710e12ab124a91bf14c0e = L.marker(
+                [37.5665, 126.978],
+                {
+}
+            ).addTo(map_bebd68df275425ef0f10e883cd756be0);
+        
+    
+            var icon_67ef0f1d4d0ed002f291daaae3d935d6 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_926230bd43b81cce47f38fc87953ee31 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_98e354ea9da08b9bc2ff0251542a9951 = $(`<div id="html_98e354ea9da08b9bc2ff0251542a9951" style="width: 100.0%; height: 100.0%;"><b>서울시청</b><br>위도: 37.5665<br>경도: 126.978</div>`)[0];
+                popup_926230bd43b81cce47f38fc87953ee31.setContent(html_98e354ea9da08b9bc2ff0251542a9951);
+            
+        
+
+        marker_843c3ff2ddd710e12ab124a91bf14c0e.bindPopup(popup_926230bd43b81cce47f38fc87953ee31)
+        ;
+
+        
+    
+    
+            marker_843c3ff2ddd710e12ab124a91bf14c0e.bindTooltip(
+                `<div>
+                     서울시청 (클릭하여 좌표 보기)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_843c3ff2ddd710e12ab124a91bf14c0e.setIcon(icon_67ef0f1d4d0ed002f291daaae3d935d6);
+            
+    
+            var marker_181c7d19ad479eec302128fd3bf7e2b4 = L.marker(
+                [37.5796, 126.977],
+                {
+}
+            ).addTo(map_bebd68df275425ef0f10e883cd756be0);
+        
+    
+            var icon_7ddbd4610c2c8f731df2cb8deb0099f4 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_044a975e9cd452cbc3ff10a6f4e61c25 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_b877812e733bb8c0512951d1e910f96d = $(`<div id="html_b877812e733bb8c0512951d1e910f96d" style="width: 100.0%; height: 100.0%;"><b>경복궁</b><br>위도: 37.5796<br>경도: 126.977</div>`)[0];
+                popup_044a975e9cd452cbc3ff10a6f4e61c25.setContent(html_b877812e733bb8c0512951d1e910f96d);
+            
+        
+
+        marker_181c7d19ad479eec302128fd3bf7e2b4.bindPopup(popup_044a975e9cd452cbc3ff10a6f4e61c25)
+        ;
+
+        
+    
+    
+            marker_181c7d19ad479eec302128fd3bf7e2b4.bindTooltip(
+                `<div>
+                     경복궁 (클릭하여 좌표 보기)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_181c7d19ad479eec302128fd3bf7e2b4.setIcon(icon_7ddbd4610c2c8f731df2cb8deb0099f4);
+            
+    
+            var marker_d58df601ed36eb145ec34915b646e06b = L.marker(
+                [37.5512, 126.9882],
+                {
+}
+            ).addTo(map_bebd68df275425ef0f10e883cd756be0);
+        
+    
+            var icon_69a44ea5d770e1ef2d7ce8a9bf79f8f1 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1050de0324628053ea8bb2b2646b9f66 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_9330118caa75aea0485a7b96eb0ab23a = $(`<div id="html_9330118caa75aea0485a7b96eb0ab23a" style="width: 100.0%; height: 100.0%;"><b>남산서울타워</b><br>위도: 37.5512<br>경도: 126.9882</div>`)[0];
+                popup_1050de0324628053ea8bb2b2646b9f66.setContent(html_9330118caa75aea0485a7b96eb0ab23a);
+            
+        
+
+        marker_d58df601ed36eb145ec34915b646e06b.bindPopup(popup_1050de0324628053ea8bb2b2646b9f66)
+        ;
+
+        
+    
+    
+            marker_d58df601ed36eb145ec34915b646e06b.bindTooltip(
+                `<div>
+                     남산서울타워 (클릭하여 좌표 보기)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d58df601ed36eb145ec34915b646e06b.setIcon(icon_69a44ea5d770e1ef2d7ce8a9bf79f8f1);
+            
+    
+            var marker_464927c6ee3c47c6afd27503061f7fa6 = L.marker(
+                [37.4979, 127.0276],
+                {
+}
+            ).addTo(map_bebd68df275425ef0f10e883cd756be0);
+        
+    
+            var icon_611cc6fdfbe6e674418f4b6324b404f5 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_426ed7c2396444bacea988b7490e2cc5 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_28766036cc2ffb61eddda17db6c3e356 = $(`<div id="html_28766036cc2ffb61eddda17db6c3e356" style="width: 100.0%; height: 100.0%;"><b>강남역</b><br>위도: 37.4979<br>경도: 127.0276</div>`)[0];
+                popup_426ed7c2396444bacea988b7490e2cc5.setContent(html_28766036cc2ffb61eddda17db6c3e356);
+            
+        
+
+        marker_464927c6ee3c47c6afd27503061f7fa6.bindPopup(popup_426ed7c2396444bacea988b7490e2cc5)
+        ;
+
+        
+    
+    
+            marker_464927c6ee3c47c6afd27503061f7fa6.bindTooltip(
+                `<div>
+                     강남역 (클릭하여 좌표 보기)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_464927c6ee3c47c6afd27503061f7fa6.setIcon(icon_611cc6fdfbe6e674418f4b6324b404f5);
+            
+</script>
+</html>
