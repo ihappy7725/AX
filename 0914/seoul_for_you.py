@@ -12,6 +12,11 @@ import textwrap
 import streamlit as st
 import streamlit.components.v1 as components
 from deep_translator import GoogleTranslator
+
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
 from streamlit_folium import st_folium
 
 
@@ -24,6 +29,161 @@ st.set_page_config(
     page_icon="🗺️",
     layout="wide",
 )
+
+
+
+# ============================================================
+# LOCAL FONT HELPERS
+# These functions must be defined before the hero/font CSS uses them.
+# ============================================================
+
+def find_local_asset(filename):
+    """
+    Search for a font/image file in:
+    1) the same folder as seoul_for_you.py
+    2) one folder above
+    3) ./fonts
+    4) ../fonts
+    """
+    script_dir = Path(__file__).resolve().parent
+
+    candidates = [
+        script_dir / filename,
+        script_dir.parent / filename,
+        script_dir / "fonts" / filename,
+        script_dir.parent / "fonts" / filename,
+    ]
+
+    for candidate in candidates:
+        if candidate.exists() and candidate.is_file():
+            return candidate
+
+    return None
+
+
+@st.cache_data(show_spinner=False)
+def font_to_data_uri(path_str):
+    """
+    Convert a local .ttf/.otf font into a Base64 data URI
+    so the browser can actually use the local font.
+    """
+    font_path = Path(path_str)
+
+    if not font_path.exists():
+        return None, None
+
+    encoded = base64.b64encode(font_path.read_bytes()).decode("utf-8")
+
+    if font_path.suffix.lower() == ".ttf":
+        mime_type = "font/ttf"
+        font_format = "truetype"
+    else:
+        mime_type = "font/otf"
+        font_format = "opentype"
+
+    data_uri = f"data:{mime_type};base64,{encoded}"
+
+    return data_uri, font_format
+
+
+def apply_language_font(language_code):
+    """
+    Apply the uploaded Chinese/Japanese font to the Streamlit app.
+    """
+    font_paths = []
+    css_families = []
+
+    if language_code == "zh-CN":
+        chinese_font = find_local_asset("DaMengXiuKai-Regular-2.ttf")
+
+        if chinese_font is not None:
+            font_paths.append(("SeoulChinese", chinese_font))
+            css_families.append("'SeoulChinese'")
+
+    elif language_code == "ja":
+        japanese_p_font = find_local_asset("ipamp.ttf")
+        japanese_font = find_local_asset("ipam.ttf")
+
+        if japanese_p_font is not None:
+            font_paths.append(("SeoulJapaneseP", japanese_p_font))
+            css_families.append("'SeoulJapaneseP'")
+
+        if japanese_font is not None:
+            font_paths.append(("SeoulJapanese", japanese_font))
+            css_families.append("'SeoulJapanese'")
+
+    # English uses the normal site font.
+    if not font_paths:
+        return
+
+    font_face_rules = []
+
+    for family_name, font_path in font_paths:
+        data_uri, font_format = font_to_data_uri(str(font_path))
+
+        if data_uri is None:
+            continue
+
+        font_face_rules.append(
+            f"""
+            @font-face {{
+                font-family: '{family_name}';
+                src: url('{data_uri}') format('{font_format}');
+                font-style: normal;
+                font-weight: normal;
+                font-display: swap;
+            }}
+            """
+        )
+
+    if not font_face_rules:
+        return
+
+    font_stack = ", ".join(css_families + ["sans-serif"])
+
+    st.markdown(
+        f"""
+        <style>
+        {''.join(font_face_rules)}
+
+        [data-testid="stAppViewContainer"],
+        [data-testid="stSidebar"],
+        .stMarkdown,
+        .stCaption,
+        .stButton button,
+        .stSelectbox,
+        .stRadio,
+        .stMetric,
+        .stExpander,
+        input,
+        textarea,
+        select,
+        button,
+        p,
+        span,
+        label,
+        li,
+        a,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {{
+            font-family: {font_stack} !important;
+        }}
+
+        /* Keep the English poster wordmark visually consistent. */
+        .poster-wordmark,
+        .top-brand,
+        .poster-caption-small {{
+            font-family: Arial Black, Arial, Helvetica, sans-serif !important;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 
 
 # ============================================================
@@ -66,8 +226,14 @@ st.markdown(
 
         .block-container {
             max-width: 1420px;
-            padding-top: 1.2rem;
+            padding-top: 3.8rem !important;
             padding-bottom: 4rem;
+        }
+
+
+        /* Keep the app content below Streamlit's fixed toolbar. */
+        [data-testid="stHeader"] {
+            min-height: 2.75rem !important;
         }
 
         /* ---------- Top brand bar ---------- */
@@ -81,7 +247,10 @@ st.markdown(
             letter-spacing: 0.16em;
             color: var(--sfy-green);
             text-transform: uppercase;
-            padding: 0.45rem 0;
+            padding: 0.35rem 0 0.5rem 0;
+            line-height: 1.45;
+            min-height: 1.8rem;
+            overflow: visible !important;
         }
 
         .top-brand-dot {
@@ -440,7 +609,8 @@ st.markdown(
             display: flex;
             align-items: flex-start;
             justify-content: flex-start;
-            margin: 0.2rem 0 0.25rem 0;
+            margin: 0.35rem 0 0.25rem 0;
+            padding-top: 0.35rem;
             overflow: visible !important;
         }
 
@@ -605,6 +775,15 @@ UI = {
     "en": {
         "tagline": "Eight journeys, one city. Find the Seoul story you want to walk into.",
         "language": "Language",
+        "ai_title": "Ask me anything about Seoul travel",
+        "ai_subtitle": "Routes, food, neighborhoods, etiquette, transport and more.",
+        "ai_placeholder": "e.g. Where should I go on a rainy afternoon?",
+        "ai_send": "Ask Seoul AI",
+        "ai_clear": "Clear chat",
+        "ai_api_missing": "OpenAI API key is not configured.",
+        "ai_api_key": "OpenAI API key",
+        "ai_error": "I couldn't answer that just now. Please try again.",
+        "ai_install": "Install the `openai` package to use the travel chat.",
         "weather": "Seoul weather",
         "exchange": "Exchange rate",
         "shown": "Places shown",
@@ -705,6 +884,15 @@ Police: **112** · Fire/ambulance: **119** · Korea Travel Helpline: **1330**.
     "zh-CN": {
         "tagline": "八段旅程，一座城市。走进属于你的首尔故事。",
         "language": "语言",
+        "ai_title": "关于首尔旅行，什么都可以问我",
+        "ai_subtitle": "路线、美食、街区、礼仪、交通等都可以问。",
+        "ai_placeholder": "例如：下雨的下午去哪里比较好？",
+        "ai_send": "询问首尔 AI",
+        "ai_clear": "清空对话",
+        "ai_api_missing": "尚未设置 OpenAI API 密钥。",
+        "ai_api_key": "OpenAI API 密钥",
+        "ai_error": "暂时无法回答，请稍后再试。",
+        "ai_install": "请安装 `openai` 套件以使用旅行问答。",
         "weather": "首尔天气",
         "exchange": "汇率",
         "shown": "显示景点",
@@ -805,6 +993,15 @@ Police: **112** · Fire/ambulance: **119** · Korea Travel Helpline: **1330**.
     "ja": {
         "tagline": "場所を探すだけでなく、あなたのソウルを見つけよう。",
         "language": "言語",
+        "ai_title": "ソウル旅行について何でも聞いてください",
+        "ai_subtitle": "ルート、グルメ、街歩き、マナー、交通など何でもどうぞ。",
+        "ai_placeholder": "例：雨の午後はどこがおすすめ？",
+        "ai_send": "ソウル AI に聞く",
+        "ai_clear": "チャットを消去",
+        "ai_api_missing": "OpenAI API キーが設定されていません。",
+        "ai_api_key": "OpenAI API キー",
+        "ai_error": "現在回答できません。もう一度お試しください。",
+        "ai_install": "旅行チャットを使うには `openai` パッケージをインストールしてください。",
         "weather": "ソウルの天気",
         "exchange": "為替レート",
         "shown": "表示スポット数",
@@ -995,6 +1192,10 @@ if "place_filter" not in st.session_state:
     st.session_state.place_filter = "__ALL__"
 
 
+if "seoul_chat" not in st.session_state:
+    st.session_state.seoul_chat = []
+
+
 # ============================================================
 # 5. TOP-RIGHT LANGUAGE SWITCH
 # ============================================================
@@ -1048,6 +1249,9 @@ lang_code = LANG_CONFIG[st.session_state.language_key]["code"]
 currency_code = LANG_CONFIG[st.session_state.language_key]["currency"]
 txt = UI[lang_code]
 
+# Apply the selected Chinese/Japanese local font.
+apply_language_font(lang_code)
+
 # Full-width editorial poster hero
 # Rendered inside a Streamlit HTML component so Markdown never interprets
 # nested <div> / <svg> blocks as code.
@@ -1058,6 +1262,8 @@ def build_hero_font_css(language_code):
         font_path = find_local_asset("DaMengXiuKai-Regular-2.ttf")
         if font_path is not None:
             data_uri, font_format = font_to_data_uri(str(font_path))
+            if data_uri is None:
+                return "", "Arial, Helvetica, sans-serif"
             return (
                 f"""
                 @font-face {{
@@ -1078,6 +1284,8 @@ def build_hero_font_css(language_code):
         )
         if font_path is not None:
             data_uri, font_format = font_to_data_uri(str(font_path))
+            if data_uri is None:
+                return "", "Arial, Helvetica, sans-serif"
             return (
                 f"""
                 @font-face {{
@@ -2100,6 +2308,144 @@ def select_place(place_name):
     st.session_state.place_filter = place_name
 
 
+
+# ============================================================
+# 12-1. SEOUL AI TRAVEL GUIDE
+# ============================================================
+
+def get_openai_api_key():
+    """Read the API key from Streamlit secrets or environment variables."""
+    try:
+        secret_key = st.secrets.get("OPENAI_API_KEY", "")
+    except Exception:
+        secret_key = ""
+
+    return secret_key or os.getenv("OPENAI_API_KEY", "")
+
+
+def build_seoul_ai_context(question, max_places=12):
+    """
+    Select a compact set of relevant places from the local curated CSV.
+    This keeps requests small while grounding recommendations in this app.
+    """
+    q = str(question).lower().strip()
+    scored = []
+
+    rainy_terms = ["rain", "rainy", "비", "雨", "下雨"]
+    night_terms = ["night", "evening", "야경", "밤", "夜"]
+    food_terms = ["food", "eat", "market", "먹", "맛집", "美食", "吃", "グルメ", "食"]
+    nature_terms = ["nature", "park", "hike", "mountain", "공원", "산", "自然", "公园", "山", "公園"]
+
+    wants_rain = any(term in q for term in rainy_terms)
+    wants_night = any(term in q for term in night_terms)
+    wants_food = any(term in q for term in food_terms)
+    wants_nature = any(term in q for term in nature_terms)
+
+    for _, row in df.iterrows():
+        searchable = " ".join([
+            str(row.get("name", "")),
+            str(row.get("display_name", "")),
+            str(row.get("gu", "")),
+            str(row.get("display_gu", "")),
+            str(row.get("themes", "")),
+            str(row.get("journeys", "")),
+            str(row.get("desc", ""))[:300],
+        ]).lower()
+
+        score = 0
+        for token in re.findall(r"[\w가-힣一-龥ぁ-んァ-ン]+", q):
+            if len(token) >= 2 and token in searchable:
+                score += 3
+
+        if wants_rain and bool(row.get("indoor", False)):
+            score += 4
+        if wants_night and bool(row.get("night_ok", False)):
+            score += 4
+        if wants_food and "food" in str(row.get("themes", "")):
+            score += 4
+        if wants_nature and "nature" in str(row.get("themes", "")):
+            score += 4
+
+        scored.append((score, row))
+
+    scored.sort(key=lambda item: item[0], reverse=True)
+    selected = [row for score, row in scored[:max_places] if score > 0]
+
+    if not selected:
+        selected = [row for _, row in scored[:max_places]]
+
+    lines = []
+    for row in selected:
+        lines.append(
+            " | ".join([
+                f"Name: {row.get('display_name', row.get('name', ''))}",
+                f"District: {row.get('display_gu', row.get('gu', ''))}",
+                f"Themes: {row.get('themes', '')}",
+                f"Suggested stay: {row.get('duration_hours', '')}h",
+                f"Indoor: {row.get('indoor', '')}",
+                f"Night: {row.get('night_ok', '')}",
+                f"Description: {str(row.get('desc', ''))[:220]}",
+            ])
+        )
+
+    return "\n".join(lines)
+
+
+def ask_seoul_travel_ai(question, api_key):
+    """Ask OpenAI's Responses API for a concise Seoul-travel answer."""
+    if OpenAI is None:
+        raise RuntimeError("openai package is not installed.")
+
+    language_name = {
+        "en": "English",
+        "zh-CN": "Simplified Chinese",
+        "ja": "Japanese",
+    }.get(lang_code, "English")
+
+    local_context = build_seoul_ai_context(question)
+
+    recent_history = st.session_state.seoul_chat[-6:]
+    history_text = "\n".join(
+        f"{item['role'].upper()}: {item['content']}"
+        for item in recent_history
+    )
+
+    instructions = f"""
+You are the AI travel guide inside 'Seoul for You', a Seoul travel map for international visitors.
+Always answer in {language_name}.
+Be practical, concise, friendly, and specific.
+Use the curated Seoul place context when relevant.
+For opening hours, ticket prices, temporary closures, reservations, or other real-time facts,
+tell the traveler to verify the latest information on the official venue or Visit Seoul site
+unless the information is explicitly present in the provided context.
+Do not invent transit exits, prices, or opening times.
+When useful, suggest 2-4 places rather than overwhelming the traveler.
+"""
+
+    prompt = f"""
+CURATED MAP CONTEXT:
+{local_context}
+
+RECENT CONVERSATION:
+{history_text}
+
+TRAVELER QUESTION:
+{question}
+"""
+
+    client = OpenAI(api_key=api_key)
+    response = client.responses.create(
+        model=os.getenv("OPENAI_MODEL", "gpt-5.6-luna"),
+        instructions=instructions,
+        input=prompt,
+    )
+
+    answer = getattr(response, "output_text", "")
+    if not answer:
+        raise RuntimeError("Empty response from OpenAI.")
+    return answer.strip()
+
+
 # ============================================================
 # 13. WEATHER-BASED AUTO SITUATION
 # ============================================================
@@ -2118,8 +2464,83 @@ else:
 
 
 # ============================================================
-# 14. SIDEBAR FILTERS
+# 14. SIDEBAR: SEOUL AI + FILTERS
 # ============================================================
+
+with st.sidebar:
+    st.markdown(f"### 💬 {txt['ai_title']}")
+    st.caption(txt["ai_subtitle"])
+
+    api_key = get_openai_api_key()
+
+    if not api_key:
+        api_key = st.text_input(
+            txt["ai_api_key"],
+            type="password",
+            key="openai_key_input",
+            help="Used only for this Streamlit session unless OPENAI_API_KEY is set in Streamlit secrets or your environment.",
+        )
+
+    if OpenAI is None:
+        st.warning(txt["ai_install"])
+    elif not api_key:
+        st.caption(txt["ai_api_missing"])
+
+    if st.session_state.seoul_chat:
+        chat_box = st.container(height=240, border=True)
+        with chat_box:
+            for message in st.session_state.seoul_chat[-6:]:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
+
+    with st.form("seoul_ai_form", clear_on_submit=True):
+        question = st.text_input(
+            txt["ai_placeholder"],
+            key="seoul_ai_question",
+            label_visibility="collapsed",
+        )
+        ask_clicked = st.form_submit_button(
+            txt["ai_send"],
+            width="stretch",
+        )
+
+    if ask_clicked and question.strip():
+        st.session_state.seoul_chat.append(
+            {"role": "user", "content": question.strip()}
+        )
+
+        if OpenAI is None:
+            st.session_state.seoul_chat.append(
+                {"role": "assistant", "content": txt["ai_install"]}
+            )
+        elif not api_key:
+            st.session_state.seoul_chat.append(
+                {"role": "assistant", "content": txt["ai_api_missing"]}
+            )
+        else:
+            try:
+                with st.spinner("Seoul AI..."):
+                    answer = ask_seoul_travel_ai(question.strip(), api_key)
+                st.session_state.seoul_chat.append(
+                    {"role": "assistant", "content": answer}
+                )
+            except Exception:
+                st.session_state.seoul_chat.append(
+                    {"role": "assistant", "content": txt["ai_error"]}
+                )
+
+        st.rerun()
+
+    if st.session_state.seoul_chat:
+        if st.button(
+            txt["ai_clear"],
+            key="clear_seoul_ai",
+            width="stretch",
+        ):
+            st.session_state.seoul_chat = []
+            st.rerun()
+
+    st.divider()
 
 st.sidebar.title(txt["filters"])
 
@@ -2459,11 +2880,13 @@ else:
         )
         st.markdown(theme_line)
 
-        info1, info2, info3, info4 = st.columns(4)
-        info1.metric("⏱", duration_label(float(row["duration_hours"])))
-        info2.metric("💰", cost_label(int(row["cost_rank"])))
-        info3.metric("🕒", best_time_label(row["best_time"]))
-        info4.metric("🏠", txt["yes"] if bool(row["indoor"]) else txt["no"])
+        detail_facts = " · ".join([
+            f"⏱ {duration_label(float(row['duration_hours']))}",
+            f"💰 {cost_label(int(row['cost_rank']))}",
+            f"🕒 {best_time_label(row['best_time'])}",
+            f"🏠 {txt['yes'] if bool(row['indoor']) else txt['no']}",
+        ])
+        st.caption(detail_facts)
 
         translated_desc = localized_detail(row, "desc", lang_code)
         translated_directions = localized_detail(row, "directions", lang_code)
