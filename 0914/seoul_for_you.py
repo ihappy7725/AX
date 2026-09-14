@@ -2840,18 +2840,15 @@ for _, row in final_df.iterrows():
     </div>
     """
 
-    marker_radius = 9 if len(final_df) == 1 else 6.5
-
-    folium.CircleMarker(
+    folium.Marker(
         location=[float(row["lat"]), float(row["lon"])],
-        radius=marker_radius,
         tooltip=row["display_name"],
         popup=folium.Popup(popup_html, max_width=260),
-        color="#596E58",
-        weight=2,
-        fill=True,
-        fill_color="#E9A996",
-        fill_opacity=0.96,
+        icon=folium.Icon(
+            color="red",
+            icon="map-marker",
+            prefix="fa",
+        ),
     ).add_to(m)
 
 st_folium(
@@ -3070,15 +3067,15 @@ else:
             point = [float(trip_row["lat"]), float(trip_row["lon"])]
             route_points.append(point)
             number = int(trip_row["trip_order"]) + 1
-            folium.CircleMarker(
+
+            folium.Marker(
                 point,
-                radius=9,
                 tooltip=f"{number}. {trip_row['display_name']}",
-                color="#596E58",
-                weight=2,
-                fill=True,
-                fill_color="#E9A996",
-                fill_opacity=1,
+                icon=folium.Icon(
+                    color="red",
+                    icon="map-marker",
+                    prefix="fa",
+                ),
             ).add_to(trip_map)
 
         if len(route_points) >= 2:
