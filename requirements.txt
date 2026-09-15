@@ -10,4 +10,6 @@ streamlit-folium
 openai
 folium
 deep-translator
-
+openpyxl
+finance-datareader
+selenium
