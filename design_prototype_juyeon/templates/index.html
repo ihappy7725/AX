@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AXP | Semiconductor Export Intelligence</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="header-inner">
+
+            <a href="#" class="brand">
+                AXP
+            </a>
+
+            <nav class="main-nav">
+                <a href="#about" data-i18n="navAbout">About</a>
+                <a href="#business" data-i18n="navBusiness">Business</a>
+                <a href="#workflow" data-i18n="navHow">How it works</a>
+                <a href="#preview">AXPORT</a>
+                <a href="#project" data-i18n="navProject">Project</a>
+            </nav>
+
+            <div class="header-actions">
+
+                <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">
+                    <span id="themeIcon">☼</span>
+                </button>
+
+                <div class="language-selector">
+                    <button id="languageToggle" class="language-button" type="button">
+                        <span class="language-globe">◎</span>
+                        <span id="currentLanguage">KO</span>
+                        <span class="language-arrow">▾</span>
+                    </button>
+
+                    <div id="languageMenu" class="language-menu">
+                        <button type="button" data-language="ko">KO</button>
+                        <button type="button" data-language="en">EN</button>
+                        <button type="button" data-language="zh">中文</button>
+                        <button type="button" data-language="ja">日本語</button>
+                    </div>
+                </div>
+
+                <button class="launch-button" type="button" data-i18n="launchAxport">
+                    Launch AXPORT
+                </button>
+
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <section class="hero">
+            <div class="hero-background">
+                <img
+                    class="hero-background-image"
+                    src="{{ url_for('static', filename='images/hero-semiconductor.png') }}"
+                    alt="Semiconductor data network"
+                >
+                <div class="hero-overlay"></div>
+            </div>
+
+            <div class="hero-inner">
+                <div class="hero-copy">
+                    <h1 class="hero-title" data-i18n-html="heroTitle">
+                        반도체 수출의 모든 신호를,<br>
+                        하나의 Control Tower에서.
+                    </h1>
+
+                    <div class="hero-actions">
+                        <button class="hero-primary-button" type="button" data-i18n="heroStart">
+                            AXPORT 시작하기
+                        </button>
+
+                        <a href="#business" class="hero-secondary-button" data-i18n="heroExplore">
+                            기능 둘러보기
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#about" class="hero-scroll">
+                <span>SCROLL</span>
+                <span class="scroll-line"></span>
+            </a>
+        </section>
+
+        <section id="about" class="content-section about-section">
+            <div class="section-shell">
+                <div class="section-heading">
+                    <p class="section-kicker">ABOUT AXP</p>
+
+                    <h2 data-i18n-html="aboutTitle">
+                        흩어진 수출 데이터를<br>
+                        하나의 흐름으로.
+                    </h2>
+
+                    <p class="text-pretty" data-i18n="aboutDescription">
+                        시장, 무역, 규제, 환율, 물류 데이터를 연결해
+                        반도체 제조사의 글로벌 수출 의사결정을 지원합니다.
+                    </p>
+                </div>
+
+                <div class="about-statements">
+                    <div class="statement">
+                        <span>01</span>
+                        <p class="text-pretty" data-i18n-html="about01">
+                            글로벌 시장의<br>
+                            기회를 찾고
+                        </p>
+                    </div>
+
+                    <div class="statement">
+                        <span>02</span>
+                        <p class="text-pretty" data-i18n-html="about02">
+                            수출 과정의<br>
+                            위험을 읽고
+                        </p>
+                    </div>
+
+                    <div class="statement">
+                        <span>03</span>
+                        <p class="text-pretty" data-i18n-html="about03">
+                            실행 가능한<br>
+                            판단으로 연결합니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="business" class="content-section business-section">
+            <div class="section-shell">
+
+                <div class="business-heading">
+                    <p class="section-kicker">BUSINESS</p>
+
+                    <h2 data-i18n-html="businessTitle">
+                        하나의 Control Tower,<br>
+                        여섯 개의 수출 신호.
+                    </h2>
+                </div>
+
+                <div id="businessStage" class="business-stage">
+
+                    <div id="businessCursor" class="business-cursor"></div>
+
+                    <div class="orbit orbit-outer"></div>
+                    <div class="orbit orbit-middle"></div>
+                    <div class="orbit orbit-inner"></div>
+
+                    <div class="business-core">
+                        <div id="businessGlobe" class="business-globe">
+                            <div class="business-globe-glow"></div>
+                            <div id="businessGlobeCanvas" class="business-globe-canvas"></div>
+                        </div>
+
+                        <div class="core-copy">
+                            <p id="businessCoreLabel" class="core-label">MARKET</p>
+                            <h3 id="businessCoreTitle">Market Intelligence</h3>
+                            <p id="businessCoreDescription" class="text-pretty">
+                                국가별 시장 규모와 성장 흐름을 분석해
+                                새로운 수출 기회를 탐색합니다.
+                            </p>
+                        </div>
+                    </div>
+
+                    <button class="business-node node-market active" type="button" data-business="market">
+                        <span class="node-dot"></span>
+                        <span class="node-name" data-i18n="businessMarket">MARKET</span>
+                    </button>
+
+                    <button class="business-node node-trade" type="button" data-business="trade">
+                        <span class="node-dot"></span>
+                        <span class="node-name" data-i18n="businessTrade">TRADE</span>
+                    </button>
+
+                    <button class="business-node node-compliance" type="button" data-business="compliance">
+                        <span class="node-dot"></span>
+                        <span class="node-name" data-i18n="businessCompliance">COMPLIANCE</span>
+                    </button>
+
+                    <button class="business-node node-fx" type="button" data-business="fx">
+                        <span class="node-dot"></span>
+                        <span class="node-name" data-i18n="businessFx">FX</span>
+                    </button>
+
+                    <button class="business-node node-logistics" type="button" data-business="logistics">
+                        <span class="node-dot"></span>
+                        <span class="node-name" data-i18n="businessLogistics">LOGISTICS</span>
+                    </button>
+
+                    <button class="business-node node-hangeol" type="button" data-business="hangeol">
+                        <span class="node-dot"></span>
+                        <span class="node-name" data-i18n="businessAdvisor">AI ADVISOR</span>
+                    </button>
+
+                </div>
+
+                <p class="business-guide text-pretty" data-i18n="businessGuide">
+                    각 항목에 마우스를 올려 AXP의 분석 영역을 확인하세요.
+                </p>
+
+            </div>
+        </section>
+
+        <section id="workflow" class="content-section workflow-section">
+            <div class="section-shell">
+
+                <div class="section-heading">
+                    <p class="section-kicker">HOW IT WORKS</p>
+
+                    <h2 data-i18n-html="workflowTitle">
+                        데이터에서<br>
+                        의사결정까지.
+                    </h2>
+                </div>
+
+                <div class="workflow-grid">
+                    <article class="workflow-card">
+                        <span>01</span>
+                        <h3>Data</h3>
+                        <p class="text-pretty" data-i18n="workflow01">
+                            회사 데이터와 글로벌 무역 데이터를 연결합니다.
+                        </p>
+                    </article>
+
+                    <article class="workflow-card">
+                        <span>02</span>
+                        <h3>Analyze</h3>
+                        <p class="text-pretty" data-i18n="workflow02">
+                            국가, HS Code, 기간별 시장과 위험을 분석합니다.
+                        </p>
+                    </article>
+
+                    <article class="workflow-card">
+                        <span>03</span>
+                        <h3>Evaluate</h3>
+                        <p class="text-pretty" data-i18n="workflow03">
+                            수출 적합성과 핵심 리스크를 정량적으로 확인합니다.
+                        </p>
+                    </article>
+
+                    <article class="workflow-card">
+                        <span>04</span>
+                        <h3>Act</h3>
+                        <p class="text-pretty" data-i18n="workflow04">
+                            분석 결과를 실제 대응 전략과 액션으로 연결합니다.
+                        </p>
+                    </article>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="preview" class="content-section preview-section">
+            <div class="section-shell preview-layout">
+
+                <div class="preview-copy">
+                    <p class="section-kicker">AXPORT</p>
+
+                    <h2 class="preview-title">
+                        <span class="preview-title-line" data-i18n="previewTitle01">
+                            수출 의사결정을 위한
+                        </span>
+
+                        <span class="preview-title-line" data-i18n="previewTitle02">
+                            새로운 업무 공간.
+                        </span>
+                    </h2>
+
+                    <p class="text-pretty" data-i18n-html="previewDescription">
+                        각 분석 기능을 독립적인 앱처럼 실행하고,
+                        필요한 정보를 하나의 작업 공간에서 연결합니다.
+                    </p>
+
+                    <button class="hero-primary-button" type="button" data-i18n="openAxport">
+                        AXPORT 열기
+                    </button>
+                </div>
+
+                <div class="desktop-preview">
+                    <div class="desktop-topbar">
+                        <div class="desktop-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                        <span>AXPORT</span>
+                        <span id="desktopLanguage">KO</span>
+                    </div>
+
+                    <div class="desktop-body">
+                        <aside class="desktop-sidebar">
+                            <strong>AXPORT</strong>
+                            <div>Overview</div>
+                            <div>Trade</div>
+                            <div>Suitability</div>
+                            <div>Compliance</div>
+                            <div>FX</div>
+                        </aside>
+
+                        <div class="desktop-workspace">
+                            <p>Export Suitability</p>
+
+                            <div class="demo-score">
+                                <strong>82</strong>
+                                <span>/ 100</span>
+                            </div>
+
+                            <div class="demo-bars">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="project" class="content-section project-section">
+            <div class="section-shell">
+                <p class="section-kicker">PROJECT</p>
+
+                <h2 class="project-title">
+                    Semiconductor Export<br>
+                    Intelligence Platform.
+                </h2>
+
+                <p class="project-description text-pretty" data-i18n-html="projectDescription">
+                    무역 데이터를 수집·정제·분석하여
+                    반도체 수출 의사결정을 지원하는
+                    Trade Control Tower 프로젝트입니다.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <strong>AXP</strong>
+            <span>Trade Control Tower · Demo Project</span>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>
